@@ -2,9 +2,9 @@ import { Schema, model } from 'mongoose';
 import {
   Guardian,
   LocalGuardian,
-  Student,
+  TStudent,
   UserName,
-} from './student/student.interface';
+} from './student.interface';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -66,8 +66,15 @@ const localGuradianSchema = new Schema<LocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent>({
   id: { type: String },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User Id is required.'],
+    unique: true,
+    ref: 'User',
+  },
+
   name: userNameSchema,
   gender: ['male', 'female'],
   dateOfBirth: { type: String },
@@ -80,7 +87,7 @@ const studentSchema = new Schema<Student>({
   guardian: guardianSchema,
   localGuardian: localGuradianSchema,
   profileImg: { type: String },
-  isActive: ['active', 'blocked'],
+  isDeleted: {type: Boolean},
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+export const StudentModel = model<TStudent>('Student', studentSchema);
